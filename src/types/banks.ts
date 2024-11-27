@@ -7,11 +7,12 @@ export interface Bank {
 }
 
 export interface BankContextType {
-  banks: Bank[];
-  fetchBanksList: (page: number, pageSize: number) => Promise<void>;
-  addBank: (bank: Omit<Bank, "id">) => Promise<void>;
-  updateBankDetails: (bank: Bank) => Promise<void>;
-  removeBank: (id: string) => Promise<void>;
+  banks: BanksResponse;
+  setPage: (page: number) => void;
+  setPageSize: (pageSize: number) => void;
+  page: number;
+  pageSize: number;
+  isLoading: boolean;
 }
 
 export interface CreateBankRequest {
@@ -19,4 +20,18 @@ export interface CreateBankRequest {
   account: number;
   branch: number;
   balance: number;
+}
+
+export interface BanksResponse {
+  result: Bank[];
+  errors: any[];
+  isValid: boolean;
+  pagination: Pagination;
+}
+
+export interface Pagination {
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
 }

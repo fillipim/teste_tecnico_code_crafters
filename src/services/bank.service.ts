@@ -1,10 +1,12 @@
-import { CreateBankRequest } from "@/types/banks";
+import { Bank, BanksResponse, CreateBankRequest } from "@/types/banks";
 import api from "./api";
 
-export const fetchBanks = (page: number, pageSize: number) =>
+export const getBanks = (page: number, pageSize: number) =>
   api.get(`?PageNumber=${page}&PageSize=${pageSize}`);
 
-export const createBank = async (formData: CreateBankRequest): Promise<any> => {
+export const createBank = async (
+  formData: CreateBankRequest
+): Promise<BanksResponse> => {
   const { data } = await api.post("/banck-account", formData);
   console.log(data);
 

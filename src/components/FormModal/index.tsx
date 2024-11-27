@@ -20,15 +20,16 @@ import {
 } from "@/components/ui/dialog";
 import FormFieldInput from "@/components/FormField";
 import { toaster } from "@/components/ui/toaster";
+import { queryClient } from "@/index";
 
 const FormModal: React.FC = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: createBank,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["banks"] });
       toaster.create({
         title: "Banco cadastrado!",
         type: "success",
-        placement: "top-end",
       });
     },
   });
@@ -94,7 +95,6 @@ const FormModal: React.FC = () => {
                   name="balance"
                   label="Saldo"
                   FieldValue={form.Field}
-                  formatNumber={true}
                   startElement="R$"
                 />
               </Fieldset.Content>
