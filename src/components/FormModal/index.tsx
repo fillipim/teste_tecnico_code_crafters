@@ -1,3 +1,4 @@
+import React, { useRef } from "react";
 import { Fieldset, DialogActionTrigger, Spinner } from "@chakra-ui/react";
 import { AnySchema } from "yup";
 import { useForm, Validator } from "@tanstack/react-form";
@@ -22,14 +23,16 @@ import FormFieldInput from "@/components/FormField";
 import { toaster } from "@/components/ui/toaster";
 
 const FormModal: React.FC = () => {
+  const closeTriggerRef = useRef<HTMLButtonElement | null>(null);
+
   const { mutate, isPending } = useMutation({
     mutationFn: createBank,
     onSuccess: () => {
       toaster.create({
         title: "Banco cadastrado!",
         type: "success",
-        placement: "top-end",
       });
+      closeTriggerRef.current?.click();
     },
   });
 
@@ -101,7 +104,7 @@ const FormModal: React.FC = () => {
             </Fieldset.Root>
           </DialogBody>
           <DialogFooter>
-            <DialogActionTrigger asChild>
+            <DialogActionTrigger asChild ref={closeTriggerRef}>
               <Button
                 background="red.500"
                 onClick={(e) => {
