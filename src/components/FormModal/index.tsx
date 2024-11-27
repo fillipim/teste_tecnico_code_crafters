@@ -1,0 +1,123 @@
+import { Fieldset, DialogActionTrigger, Spinner } from "@chakra-ui/react";
+import { AnySchema } from "yup";
+import { useForm, Validator } from "@tanstack/react-form";
+import { useMutation } from "@tanstack/react-query";
+import { yupValidator } from "@tanstack/yup-form-adapter";
+
+import { createBank } from "@/services/bank.service";
+import bankValidationSchema from "@/validations/bank.validation";
+
+import Button from "@/components/Button";
+import {
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import FormFieldInput from "@/components/FormField";
+import { toaster } from "@/components/ui/toaster";
+
+const FormModal: React.FC = () => {
+  const { mutate, isPending } = useMutation({
+    mutationFn: createBank,
+    onSuccess: () => {
+      toaster.create({
+        title: "Banco cadastrado!",
+        type: "success",
+        placement: "top-end",
+      });
+    },
+  });
+
+  const form = useForm<any, Validator<unknown, AnySchema>>({
+    onSubmit: async ({ value }) => {
+      try {
+        mutate(value);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    validatorAdapter: yupValidator(),
+    validators: {
+      onChange: bankValidationSchema,
+      onSubmit: bankValidationSchema,
+    },
+  });
+
+  return (
+    <DialogRoot motionPreset="slide-in-bottom" onExitComplete={form.reset}>
+      <DialogTrigger asChild>
+        <Button>Registrar Banco</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Cadastrar uma conta bancária</DialogTitle>
+        </DialogHeader>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <DialogBody>
+            <Fieldset.Root size="lg" w="full">
+              <Fieldset.Content>
+                <FormFieldInput
+                  type="text"
+                  name="name"
+                  label="Nome do banco"
+                  FieldValue={form.Field}
+                />
+
+                <FormFieldInput
+                  type="number"
+                  name="account"
+                  label="Número da conta"
+                  FieldValue={form.Field}
+                  maxLength={10}
+                />
+                <FormFieldInput
+                  type="number"
+                  name="branch"
+                  label="Agência"
+                  FieldValue={form.Field}
+                  maxLength={4}
+                />
+
+                <FormFieldInput
+                  type="number"
+                  name="balance"
+                  label="Saldo"
+                  FieldValue={form.Field}
+                  formatNumber={true}
+                  startElement="R$"
+                />
+              </Fieldset.Content>
+            </Fieldset.Root>
+          </DialogBody>
+          <DialogFooter>
+            <DialogActionTrigger asChild>
+              <Button
+                background="red.500"
+                onClick={(e) => {
+                  e.preventDefault();
+                  form.reset();
+                }}
+              >
+                Cancelar
+              </Button>
+            </DialogActionTrigger>
+            <Button type="submit">{isPending ? <Spinner /> : "Salvar"}</Button>
+          </DialogFooter>
+        </form>
+        <DialogCloseTrigger />
+      </DialogContent>
+    </DialogRoot>
+  );
+};
+export default FormModal;
