@@ -8,7 +8,7 @@ import { ChakraProvider } from "@/contexts/ChakraProvider";
 import { BankProvider } from "@/contexts/BankContext";
 import { Toaster } from "@/components/ui/toaster";
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -16,14 +16,14 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ChakraProvider>
-          <Toaster />
-          <BankProvider>
+      <BankProvider>
+        <BrowserRouter>
+          <ChakraProvider>
+            <Toaster />
             <App />
-          </BankProvider>
-        </ChakraProvider>
-      </BrowserRouter>
+          </ChakraProvider>
+        </BrowserRouter>
+      </BankProvider>
     </QueryClientProvider>
   </React.StrictMode>
 );
