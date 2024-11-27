@@ -16,6 +16,7 @@ import { formatToBRL } from "@/utils/formatToBRL";
 
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
+import { Tooltip } from "@/components/ui/tooltip";
 
 const Home: React.FC = () => {
   const { banks, page, pageSize, setPage } = useBankContext();
@@ -51,12 +52,16 @@ const Home: React.FC = () => {
                     <Table.Cell>{item.branch}</Table.Cell>
                     <Table.Cell>{formatToBRL(item.balance)}</Table.Cell>
                     <Table.Cell justifyContent="end" display="flex" gap="1rem">
-                      <IconButton background="yellow.500" size="xs">
-                        <FaEdit />
-                      </IconButton>
-                      <IconButton background="red.500" size="xs">
-                        <FaTrash color="white" />
-                      </IconButton>
+                      <Tooltip content="Editar">
+                        <IconButton background="yellow.500" size="xs">
+                          <FaEdit />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip content="Excluir">
+                        <IconButton background="red.500" size="xs">
+                          <FaTrash color="white" />
+                        </IconButton>
+                      </Tooltip>
                     </Table.Cell>
                   </Table.Row>
                 ))}
