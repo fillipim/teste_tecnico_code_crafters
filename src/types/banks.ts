@@ -35,3 +35,11 @@ export interface Pagination {
   totalElements: number;
   totalPages: number;
 }
+
+export interface BankEditRequest {
+  id?: string;
+  name?: string;
+  account?: number;
+  branch?: number;
+  balance?: number;
+}

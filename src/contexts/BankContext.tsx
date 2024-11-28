@@ -1,7 +1,7 @@
 import React, { createContext, useState, ReactNode, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-import { Bank, BankContextType, BanksResponse } from "@/types/banks";
+import { BankContextType } from "@/types/banks";
 
 import { getBanks } from "@/services/bank.service";
 import { queryClient } from "@/index";

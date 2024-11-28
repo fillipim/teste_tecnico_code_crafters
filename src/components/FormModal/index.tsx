@@ -1,12 +1,22 @@
 import React, { useRef } from "react";
-import { Fieldset, DialogActionTrigger, Spinner } from "@chakra-ui/react";
+import {
+  Fieldset,
+  DialogActionTrigger,
+  Spinner,
+  IconButton,
+} from "@chakra-ui/react";
 import { AnySchema } from "yup";
 import { useForm, Validator } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { yupValidator } from "@tanstack/yup-form-adapter";
 
-import { createBank } from "@/services/bank.service";
-import bankValidationSchema from "@/validations/bank.validation";
+import { createBank, updateBank } from "@/services/bank.service";
+import {
+  bankValidationSchema,
+  bankEditValidationSchema,
+} from "@/validations/bank.validation";
+import { BankEditRequest } from "@/types/banks";
+import { queryClient } from "@/index";
 
 import Button from "@/components/Button";
 import {
@@ -21,9 +31,10 @@ import {
 } from "@/components/ui/dialog";
 import FormFieldInput from "@/components/FormField";
 import { toaster } from "@/components/ui/toaster";
-import { queryClient } from "@/index";
+import { Tooltip } from "@/components/ui/tooltip";
+import { FaEdit } from "react-icons/fa";
 
-const FormModal: React.FC = () => {
+const FormModal: React.FC<{ formData?: BankEditRequest }> = ({ formData }) => {
   const closeTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   const { mutate, isPending } = useMutation({
@@ -38,25 +49,46 @@ const FormModal: React.FC = () => {
     },
   });
 
+  const { mutate: mutateUpdateBank, isPending: isUpdating } = useMutation({
+    mutationFn: updateBank,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["banks"] });
+      toaster.create({
+        title: "Banco atualizado!",
+        type: "success",
+      });
+      closeTriggerRef.current?.click();
+    },
+  });
+
   const form = useForm<any, Validator<unknown, AnySchema>>({
+    defaultValues: formData ?? {},
     onSubmit: async ({ value }) => {
       try {
-        mutate(value);
+        formData ? mutateUpdateBank(value) : mutate(value);
       } catch (error) {
         console.log(error);
       }
     },
     validatorAdapter: yupValidator(),
     validators: {
-      onChange: bankValidationSchema,
-      onSubmit: bankValidationSchema,
+      onChange: formData ? bankEditValidationSchema : bankValidationSchema,
+      onSubmit: formData ? bankEditValidationSchema : bankValidationSchema,
     },
   });
 
   return (
     <DialogRoot motionPreset="slide-in-bottom" onExitComplete={form.reset}>
       <DialogTrigger asChild>
-        <Button>Registrar Banco</Button>
+        {formData ? (
+          <IconButton background="yellow.500" size="xs">
+            <Tooltip content="Editar">
+              <FaEdit />
+            </Tooltip>
+          </IconButton>
+        ) : (
+          <Button>Registrar Banco</Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -116,7 +148,9 @@ const FormModal: React.FC = () => {
                 Cancelar
               </Button>
             </DialogActionTrigger>
-            <Button type="submit">{isPending ? <Spinner /> : "Salvar"}</Button>
+            <Button type="submit">
+              {isPending || isUpdating ? <Spinner /> : "Salvar"}
+            </Button>
           </DialogFooter>
         </form>
         <DialogCloseTrigger />
