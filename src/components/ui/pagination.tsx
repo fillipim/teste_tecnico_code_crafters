@@ -173,8 +173,6 @@ export const PaginationItems = (props: React.HTMLAttributes<HTMLElement>) => {
         pages
           .filter((_, idx) => idx < pages.length - 1)
           .map((page, index) => {
-            console.log(pages);
-
             return page.type === "ellipsis" ? (
               <PaginationEllipsis key={index} index={index} {...props} />
             ) : (
