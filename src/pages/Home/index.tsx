@@ -9,7 +9,7 @@ import {
   Table,
   Text,
 } from "@chakra-ui/react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 
 import { useBankContext } from "@/hooks/useBank";
 import { formatToBRL } from "@/utils/formatToBRL";
@@ -82,7 +82,7 @@ const Home: React.FC = () => {
             </Table.Root>
           </Box>
           <Pagination
-            total={banks.pagination.totalElements - 1}
+            total={banks.pagination.totalElements}
             pageSize={pageSize}
             page={page}
             defaultPage={1}
