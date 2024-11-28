@@ -16,9 +16,10 @@ import { formatToBRL } from "@/utils/formatToBRL";
 
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
+import { Tooltip } from "@/components/ui/tooltip";
 
 const Home: React.FC = () => {
-  const { banks, page, pageSize, setPage } = useBankContext();
+  const { banks, page, pageSize, setPage, isLoading } = useBankContext();
 
   return (
     <Box w="50%" m="auto">
@@ -29,8 +30,7 @@ const Home: React.FC = () => {
         <FormModal />
       </Flex>
       <Separator m="1rem 0" />
-
-      {banks && banks.result ? (
+      {banks.result.length || isLoading ? (
         <>
           <Box h="614px" mb="1rem">
             <Table.Root w="full" variant="outline">
@@ -51,12 +51,12 @@ const Home: React.FC = () => {
                     <Table.Cell>{item.branch}</Table.Cell>
                     <Table.Cell>{formatToBRL(item.balance)}</Table.Cell>
                     <Table.Cell justifyContent="end" display="flex" gap="1rem">
-                      <IconButton background="yellow.500" size="xs">
-                        <FaEdit />
-                      </IconButton>
-                      <IconButton background="red.500" size="xs">
-                        <FaTrash color="white" />
-                      </IconButton>
+                      <FormModal formData={item} />
+                      <Tooltip content="Excluir">
+                        <IconButton background="red.500" size="xs">
+                          <FaTrash color="white" />
+                        </IconButton>
+                      </Tooltip>
                     </Table.Cell>
                   </Table.Row>
                 ))}
@@ -64,7 +64,7 @@ const Home: React.FC = () => {
             </Table.Root>
           </Box>
           <Pagination
-            total={banks.pagination.totalElements}
+            total={banks.pagination.totalElements - 1}
             pageSize={pageSize}
             page={page}
             defaultPage={1}
@@ -73,7 +73,7 @@ const Home: React.FC = () => {
         </>
       ) : (
         <Center>
-          <Text>Nenhum banco cadastrado</Text>
+          <Text color="gray.500">Nenhum banco cadastrado</Text>
         </Center>
       )}
     </Box>
