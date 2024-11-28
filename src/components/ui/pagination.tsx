@@ -170,18 +170,22 @@ export const PaginationItems = (props: React.HTMLAttributes<HTMLElement>) => {
   return (
     <ChakraPagination.Context>
       {({ pages }) =>
-        pages.map((page, index) => {
-          return page.type === "ellipsis" ? (
-            <PaginationEllipsis key={index} index={index} {...props} />
-          ) : (
-            <PaginationItem
-              key={index}
-              type="page"
-              value={page.value}
-              {...props}
-            />
-          );
-        })
+        pages
+          .filter((_, idx) => idx < pages.length - 1)
+          .map((page, index) => {
+            console.log(pages);
+
+            return page.type === "ellipsis" ? (
+              <PaginationEllipsis key={index} index={index} {...props} />
+            ) : (
+              <PaginationItem
+                key={index}
+                type="page"
+                value={page.value}
+                {...props}
+              />
+            );
+          })
       }
     </ChakraPagination.Context>
   );

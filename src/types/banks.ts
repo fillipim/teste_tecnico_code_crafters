@@ -1,3 +1,5 @@
+import { UseMutateFunction } from "@tanstack/react-query";
+
 export interface Bank {
   id: string;
   name: string;
@@ -13,6 +15,8 @@ export interface BankContextType {
   page: number;
   pageSize: number;
   isLoading: boolean;
+  deleteBankMutation: UseMutateFunction<void, Error, string, unknown>;
+  isDeleting: boolean;
 }
 
 export interface CreateBankRequest {

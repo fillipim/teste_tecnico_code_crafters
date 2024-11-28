@@ -9,7 +9,7 @@ import {
   Table,
   Text,
 } from "@chakra-ui/react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 
 import { useBankContext } from "@/hooks/useBank";
 import { formatToBRL } from "@/utils/formatToBRL";
@@ -17,9 +17,18 @@ import { formatToBRL } from "@/utils/formatToBRL";
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import { Tooltip } from "@/components/ui/tooltip";
+import ActionModal from "@/components/ActionModal";
 
 const Home: React.FC = () => {
-  const { banks, page, pageSize, setPage, isLoading } = useBankContext();
+  const {
+    banks,
+    page,
+    pageSize,
+    setPage,
+    isLoading,
+    deleteBankMutation,
+    isDeleting,
+  } = useBankContext();
 
   return (
     <Box w="50%" m="auto">
@@ -52,11 +61,20 @@ const Home: React.FC = () => {
                     <Table.Cell>{formatToBRL(item.balance)}</Table.Cell>
                     <Table.Cell justifyContent="end" display="flex" gap="1rem">
                       <FormModal formData={item} />
-                      <Tooltip content="Excluir">
-                        <IconButton background="red.500" size="xs">
-                          <FaTrash color="white" />
-                        </IconButton>
-                      </Tooltip>
+                      <ActionModal
+                        action={() => deleteBankMutation(item.id)}
+                        actionText="Deletar"
+                        openButton={
+                          <IconButton background="red.500" size="xs">
+                            <Tooltip content="Deletar">
+                              <FaTrash />
+                            </Tooltip>
+                          </IconButton>
+                        }
+                        loading={isDeleting}
+                        title="Deletar banco"
+                        description="Tem certeza que deseja deletar este banco?"
+                      />
                     </Table.Cell>
                   </Table.Row>
                 ))}
@@ -64,7 +82,7 @@ const Home: React.FC = () => {
             </Table.Root>
           </Box>
           <Pagination
-            total={banks.pagination.totalElements - 1}
+            total={banks.pagination.totalElements}
             pageSize={pageSize}
             page={page}
             defaultPage={1}
