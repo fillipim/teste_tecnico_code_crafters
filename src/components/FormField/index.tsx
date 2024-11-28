@@ -59,7 +59,7 @@ const FormFieldInput: React.FC<FormFieldProps> = ({
               type={type}
               name={field.name}
               onBlur={field.handleBlur}
-              value={field.state.value}
+              value={field.state.value as string}
               onChange={(e) => handleInputValue(e, field)}
               maxLength={maxLength}
             />

@@ -3,6 +3,8 @@ import { Route, Routes } from "react-router-dom";
 
 import Home from "@/pages/Home";
 
+import "@/styles/index.css";
+
 const App: React.FC = () => {
   return (
     <Box p="2rem">

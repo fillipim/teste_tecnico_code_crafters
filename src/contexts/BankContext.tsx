@@ -1,10 +1,11 @@
 import React, { createContext, useState, ReactNode, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { BankContextType } from "@/types/banks";
 
-import { getBanks } from "@/services/bank.service";
+import { deleteBank, getBanks } from "@/services/bank.service";
 import { queryClient } from "@/index";
+import { toaster } from "@/components/ui/toaster";
 
 export const BankContext = createContext<BankContextType | undefined>(
   undefined
@@ -28,11 +29,24 @@ export const BankProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     if (!isPlaceholderData) {
       queryClient.prefetchQuery({
-        queryKey: ["projects", page + 1],
+        queryKey: ["banks", page + 1],
         queryFn: () => getBanks(page + 1, pageSize),
       });
     }
   }, [banks, isPlaceholderData, page, pageSize]);
+
+  const { mutate: deleteBankMutation, isPending: isDeleting } = useMutation({
+    mutationFn: deleteBank,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["banks"],
+      });
+      toaster.create({
+        title: "Banco deletado!",
+        type: "success",
+      });
+    },
+  });
 
   return (
     <BankContext.Provider
@@ -43,6 +57,8 @@ export const BankProvider: React.FC<{ children: ReactNode }> = ({
         setPageSize,
         page,
         pageSize,
+        deleteBankMutation,
+        isDeleting,
       }}
     >
       {children}

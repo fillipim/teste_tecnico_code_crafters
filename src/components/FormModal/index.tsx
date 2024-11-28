@@ -144,6 +144,7 @@ const FormModal: React.FC<{ formData?: BankEditRequest }> = ({ formData }) => {
                   e.preventDefault();
                   form.reset();
                 }}
+                type="button"
               >
                 Cancelar
               </Button>

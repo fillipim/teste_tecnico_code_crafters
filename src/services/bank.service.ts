@@ -19,4 +19,6 @@ export const updateBank = async (formData: BankEditRequest): Promise<void> => {
   await api.put("/banck-account", formData);
 };
 
-export const deleteBank = (id: string) => api.delete(`/banck-account?Id=${id}`);
+export const deleteBank = async (id: string): Promise<void> => {
+  await api.delete(`/banck-account?Id=${id}`);
+};
